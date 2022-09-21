@@ -52,6 +52,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Data\Context\MeuDbContext.cs" />
+    <Compile Include="Data\Mappings\EnderecoConfig.cs" />
+    <Compile Include="Data\Mappings\FornecedorConfig.cs" />
+    <Compile Include="Data\Mappings\ProdutoConfig.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
