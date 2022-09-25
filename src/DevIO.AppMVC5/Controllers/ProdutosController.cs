@@ -29,7 +29,8 @@ namespace DevIO.AppMVC5.Controllers
         public ProdutosController(IProdutoRepository produtoRepository,
                                   IProdutoService produtoService,
                                   IFornecedorRepository fornecedorRepository,
-                                  IMapper mapper)
+                                  IMapper mapper,
+                                  INotificador notificador) : base(notificador)
         {
             _produtoRepository = produtoRepository;
             _produtoService = produtoService;
