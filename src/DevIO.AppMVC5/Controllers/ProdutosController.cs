@@ -14,6 +14,7 @@ using DevIO.Business.Models.Produtos.Services;
 using DevIO.Infra.Data.Repository;
 using DevIO.Business.Core.Notificacoes;
 using AutoMapper;
+using DevIO.Business.Models.Fornecedores;
 
 namespace DevIO.AppMVC5.Controllers
 {
@@ -21,19 +22,24 @@ namespace DevIO.AppMVC5.Controllers
     {
         private readonly IProdutoRepository _produtoRepository;
         private readonly IProdutoService _produtoService;
+        private readonly IFornecedorRepository _fornecedorRepository;
         private readonly IMapper _mapper;
 
-        public ProdutosController(IProdutoRepository produtoRepository, IProdutoService produtoService, IMapper mapper)
+        public ProdutosController(IProdutoRepository produtoRepository,
+                                  IProdutoService produtoService,
+                                  IFornecedorRepository fornecedorRepository,
+                                  IMapper mapper)
         {
             _produtoRepository = produtoRepository;
             _produtoService = produtoService;
+            _fornecedorRepository = fornecedorRepository;
             _mapper = mapper;
         }
 
         [Route("lista-de-produtos")]
         public async Task<ActionResult> Index()
         {
-            return View(_mapper.Map<IEnumerable<ProdutoViewModel>>(await _produtoRepository.ObterTodos()));
+            return View(_mapper.Map<IEnumerable<ProdutoViewModel>>(await _produtoRepository.ObterProdutosFornecedores()));
         }
 
         [Route("dados-do-produtos/{id:guid}")]
@@ -49,9 +55,11 @@ namespace DevIO.AppMVC5.Controllers
 
         [HttpGet]
         [Route("novo-produto")]
-        public ActionResult Create()
+        public async Task<ActionResult> Create()
         {
-            return View();
+            var produtoViewModel = await PopularFornecedores(new ProdutoViewModel());
+
+            return View(produtoViewModel);
         }
 
         [HttpPost]
@@ -59,6 +67,8 @@ namespace DevIO.AppMVC5.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Create(ProdutoViewModel produtoViewModel)
         {
+            produtoViewModel = await PopularFornecedores(produtoViewModel);
+
             if (ModelState.IsValid)
             {
                 await _produtoService.Adicionar(_mapper.Map<Produto>(produtoViewModel));
@@ -101,7 +111,7 @@ namespace DevIO.AppMVC5.Controllers
         public async Task<ActionResult> Delete(Guid id)
         {
             ProdutoViewModel produtoViewModel = await ObterProduto(id);
-            
+
             if (produtoViewModel == null)
                 return HttpNotFound();
 
@@ -126,6 +136,13 @@ namespace DevIO.AppMVC5.Controllers
         private async Task<ProdutoViewModel> ObterProduto(Guid id)
         {
             var produtoViewModel = _mapper.Map<ProdutoViewModel>(await _produtoRepository.ObterProdutoFornecedor(id));
+            produtoViewModel.Fornecedores = _mapper.Map<IEnumerable<FornecedorViewModel>>(await _fornecedorRepository.ObterTodos());
+            return produtoViewModel;
+        }
+
+        private async Task<ProdutoViewModel> PopularFornecedores(ProdutoViewModel produtoViewModel)
+        {
+            produtoViewModel.Fornecedores = _mapper.Map<IEnumerable<FornecedorViewModel>>(await _fornecedorRepository.ObterTodos());
             return produtoViewModel;
         }
 
