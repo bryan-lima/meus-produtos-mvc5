@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DevIO.AppMVC5.Extensions;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
@@ -35,6 +36,7 @@ namespace DevIO.AppMVC5.ViewModels
 
         public string Imagem { get; set; }
 
+        [Moeda]
         [Required(ErrorMessage = "O campo {0} é obrigatório")]
         public decimal Valor { get; set; }
 
