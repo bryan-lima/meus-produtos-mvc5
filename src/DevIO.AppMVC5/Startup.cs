@@ -19,6 +19,7 @@ namespace DevIO.AppMVC5
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
+            CultureConfig.RegisterCulture();
         }
     }
 }
