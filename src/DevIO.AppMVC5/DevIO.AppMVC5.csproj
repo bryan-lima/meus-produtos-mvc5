@@ -274,6 +274,7 @@
     <Content Include="Views\Fornecedores\Create.cshtml" />
     <Content Include="Views\Fornecedores\Details.cshtml" />
     <Content Include="Views\Fornecedores\Edit.cshtml" />
+    <Content Include="Views\Fornecedores\_Endereco.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
