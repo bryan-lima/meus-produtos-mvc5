@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using DevIO.AppMVC5.Extensions;
 using DevIO.AppMVC5.ViewModels;
 using DevIO.Business.Core.Notificacoes;
 using DevIO.Business.Models.Fornecedores;
@@ -12,6 +13,7 @@ using System.Web.Mvc;
 
 namespace DevIO.AppMVC5.Controllers
 {
+    [Authorize]
     public class FornecedoresController : BaseController
     {
         private readonly IFornecedorRepository _fornecedorRepository;
@@ -28,12 +30,14 @@ namespace DevIO.AppMVC5.Controllers
             _mapper = mapper;
         }
 
+        [AllowAnonymous]
         [Route("lista-de-fornecedores")]
         public async Task<ActionResult> Index()
         {
             return View(_mapper.Map<IEnumerable<FornecedorViewModel>>(await _fornecedorRepository.ObterTodos()));
         }
 
+        [AllowAnonymous]
         [Route("dados-do-fornecedor/{id:guid}")]
         public async Task<ActionResult> Details(Guid id)
         {
@@ -45,12 +49,14 @@ namespace DevIO.AppMVC5.Controllers
             return View(fornecedorViewModel);
         }
 
+        [ClaimsAuthorize("Fornecedor", "Adicionar")]
         [Route("novo-fornecedor")]
         public ActionResult Create()
         {
             return View();
         }
 
+        [ClaimsAuthorize("Fornecedor", "Adicionar")]
         [HttpPost]
         [Route("novo-fornecedor")]
         public async Task<ActionResult> Create(FornecedorViewModel fornecedorViewModel)
@@ -66,6 +72,7 @@ namespace DevIO.AppMVC5.Controllers
             return RedirectToAction("Index");
         }
 
+        [ClaimsAuthorize("Fornecedor", "Editar")]
         [Route("editar-fornecedor/{id:guid}")]
         public async Task<ActionResult> Edit(Guid id)
         {
@@ -77,6 +84,7 @@ namespace DevIO.AppMVC5.Controllers
             return View(fornecedorViewModel);
         }
 
+        [ClaimsAuthorize("Fornecedor", "Editar")]
         [HttpPost]
         [Route("editar-fornecedor/{id:guid}")]
         public async Task<ActionResult> Edit(Guid id, FornecedorViewModel fornecedorViewModel)
@@ -96,6 +104,7 @@ namespace DevIO.AppMVC5.Controllers
             return RedirectToAction("Index");
         }
 
+        [ClaimsAuthorize("Fornecedor", "Excluir")]
         [Route("excluir-fornecedor/{id:guid}")]
         public async Task<ActionResult> Delete(Guid id)
         {
@@ -107,6 +116,7 @@ namespace DevIO.AppMVC5.Controllers
             return View(fornecedorViewModel);
         }
 
+        [ClaimsAuthorize("Fornecedor", "Excluir")]
         [HttpPost, ActionName("Delete")]
         [Route("excluir-fornecedor/{id:guid}")]
         public async Task<ActionResult> DeleteConfirmed(Guid id)
